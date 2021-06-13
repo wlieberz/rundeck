@@ -1,0 +1,11 @@
+---
+# handlers file for rundeck-community-testing
+
+- name: reload firewalld
+  become: true
+  command: firewall-cmd --reload
+
+- name: restart rundeck
+  ansible.builtin.service:
+    name: rundeckd
+    state: restarted

@@ -1,0 +1,58 @@
+---
+# tasks file for rundeck-community-testing
+
+- name: Ensure Java runtime
+  become: true
+  ansible.builtin.yum:
+    name: "{{ rundeck_java_pkg }}"
+    state: present
+
+- name: Ensure rundeck repo
+  become: true
+  ansible.builtin.copy:
+    src: rundeck.repo_rpm
+    dest: /etc/yum.repos.d/rundeck.repo
+
+- name: Ensure rundeck installed
+  become: true
+  ansible.builtin.yum:
+    name: rundeck
+    state: present
+
+- name: Ensure rundeck service
+  become: true
+  ansible.builtin.service:
+    name: rundeckd
+    enabled: yes
+    state: started
+
+- name: Ensure rundeck http port open
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ rundeck_http_port }}/tcp"
+    permanent: yes
+    state: "{{ rundeck_http_port_state }}"
+  notify:
+  - reload firewalld
+
+- name: Ensure rundeck https port open
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ rundeck_https_port }}/tcp"
+    permanent: yes
+    state: "{{ rundeck_https_port_state }}"
+  notify:
+  - reload firewalld
+
+- name: register fqdn
+  ansible.builtin.command: hostname -f
+  changed_when: False
+  register: rundeck_server_fqdn
+
+# Config when installed from rpm defaults to the rundeck servername being localhost
+- name: Ensure server name not localhost
+  ansible.builtin.template:
+    src: rundeck-config.properties.j2
+    dest: /etc/rundeck/rundeck-config.properties
+  notify:
+  - restart rundeck

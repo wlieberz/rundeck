@@ -1,0 +1,7 @@
+
+
+[testing_rundeck_servers]
+rundeck
+
+[testing_rundeck_targets]
+10.0.2.6

@@ -1,0 +1,11 @@
+---
+
+rundeck-test-target01:
+  description: Test server for rundeck to hit.
+  hostname: 10.0.2.6
+  nodename: rundeck-test-target01
+  osArch: x86_64
+  osFamily: unix
+  osName: Linux
+  tags: 'oraclelinux7,testing'
+  username: rundeck

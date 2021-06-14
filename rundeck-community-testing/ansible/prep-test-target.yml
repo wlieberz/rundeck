@@ -1,0 +1,6 @@
+---
+
+- hosts: testing_rundeck_targets
+  become: true
+  roles:
+    - prep-rundeck-target

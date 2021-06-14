@@ -26,3 +26,11 @@ URL: http://rundeck:4440/
 
 Username: admin
 Initial Password: admin
+
+4. Prep test host:
+
+Assuming you have a test host available at `10.0.2.6` which rundeck can hit, you can prep the test host by running:
+
+`ansible-playbook prep-test-target.yml`
+
+Please see the readme for the role for more details about what it does: `ansible/roles/prep-rundeck-target/README.md`

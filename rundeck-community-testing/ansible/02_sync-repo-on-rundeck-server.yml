@@ -1,0 +1,33 @@
+---
+
+# This playbook ensures this git repo is present on
+# the Rundeck server so Ansible plays can be run. 
+
+
+- name: Sync Ansible git repo on rundeck server
+  hosts: rundeck
+  become: true
+  vars:
+    repo_url: "https://github.com/wlieberz/rundeck/"
+    repo_dest: "/var/lib/rundeck/git-repos"
+  tasks:
+
+    - name: Ensure git installed
+      ansible.builtin.package:
+        name: git
+        state: present
+
+    - name: Ensure repo present
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dest }}"
+        force: yes
+
+    - name: Ensure git-repos dir permissions
+      ansible.builtin.file:
+        path: "{{ repo_dest }}"
+        recurse: yes
+        state: directory
+        owner: rundeck
+        group: rundeck
+        #mode: 

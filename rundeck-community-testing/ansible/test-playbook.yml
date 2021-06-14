@@ -1,0 +1,21 @@
+---
+
+# This is a test playbook.
+# Purpose: verify that Rundeck can run a simple Ansible playbook.
+
+
+- name: Test Playbook For Rundeck
+  hosts: all
+  tasks:
+
+    - name: Get hostname
+      ansible.builtin.command: hostname
+      register: host_name
+
+    - name: Verify sudos
+      ansible.builtin.command: sudo whoami
+      register: who_am_i
+
+    - name: Show Output
+      ansible.builtin.debug:
+        msg: "hostname: {{ host_name.stdout }}, whoami: {{ who_am_i.stdout }}"

@@ -34,3 +34,19 @@ Assuming you have a test host available at `10.0.2.6` which rundeck can hit, you
 `ansible-playbook prep-test-target.yml`
 
 Please see the readme for the role for more details about what it does: `ansible/roles/prep-rundeck-target/README.md`
+
+# Notes:
+
+## Webhooks:
+
+After creating a job, it is simple to add a webhook to call the job. In the web GUI, go to `WEBHOOKS` in the left-hand navigation bar, then click the `Add` button to create a new webhook.
+
+Once created, you can test calling the webhook via curl. If you created a webhook called `install-security-patches-rhel-5678`, you could call it with something like:
+
+```
+
+curl -L -X POST "http://rundeck.dev.lab.local:4440/api/38/webhook/<random unique string from rundeck goes here>#install-security-patches-rhel-5678"
+
+```
+
+In production, you would obviously want to lock this down and require authentication.

@@ -7,7 +7,7 @@ rdeck.base=/var/lib/rundeck
 #rss.enabled if set to true enables RSS feeds that are public (non-authenticated)
 rss.enabled=false
 # change hostname here
-grails.serverURL=http://{{ rundeck_server_fqdn.stdout }}:{{ rundeck_http_port }}
+grails.serverURL=http://{{ ansible_fqdn }}:{{ rundeck_http_port }}
 dataSource.dbCreate = update
 dataSource.url = jdbc:h2:file:/var/lib/rundeck/data/rundeckdb;MVCC=true
 

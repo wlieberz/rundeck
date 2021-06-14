@@ -44,11 +44,6 @@
   notify:
   - reload firewalld
 
-- name: register fqdn
-  ansible.builtin.command: hostname -f
-  changed_when: False
-  register: rundeck_server_fqdn
-
 # Config when installed from rpm defaults to the rundeck servername being localhost
 - name: Ensure server name not localhost
   ansible.builtin.template:

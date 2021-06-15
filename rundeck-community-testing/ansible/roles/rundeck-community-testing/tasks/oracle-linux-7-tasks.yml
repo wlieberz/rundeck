@@ -51,3 +51,20 @@
     dest: /etc/rundeck/rundeck-config.properties
   notify:
   - restart rundeck
+
+- name: Ensure EPEL repo
+  ansible.builtin.command:
+    cmd: yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    creates: /etc/yum.repos.d/epel.repo
+
+- name: Ensure Ansible installed
+  become: true
+  ansible.builtin.yum:
+    name: ansible
+    state: present
+
+- name: Ensure rundeck-cli installed
+  become: true
+  ansible.builtin.yum:
+    name: rundeck-cli
+    state: present

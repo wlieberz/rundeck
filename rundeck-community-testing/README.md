@@ -50,3 +50,48 @@ curl -L -X POST "http://rundeck.dev.lab.local:4440/api/38/webhook/<random unique
 ```
 
 In production, you would obviously want to lock this down and require authentication.
+
+## Ansible via Rundeck:
+
+### Rundeck Target Nodes vs Ansible inventory groups:
+
+Based upon observation, it appears that the way Rundeck's target node specification and Ansible's target specification work together is as a combination of the hosts specified in the Playbook and Rundeck's Target Nodes acting as a `--limit`.
+
+In other words, if your Playbook has:
+
+```
+
+- name: Fancy Playbook
+  hosts: webservers
+
+```
+
+and you try to run it via Rundeck with the Target Node set to a node not in the Ansible inventory host group `webservers`, e.g. you want to run it against `database-srv-01`, the Rundeck Job Execution will happily report that the job ran successfully, in the sense that Ansible ran with a return code of 0, but if you inspect the output from the Job Execution you will see:
+
+```
+
+PLAY [Test Playbook For Rundeck] ********
+skipping: no hosts matched
+
+```
+
+This is the same output that would result if you manually invoked the Ansible run with:
+
+`ansible-playbook test-playbook.yml --limit database-srv-01`
+
+
+For this reason, it might be less confusing to agree upon a convention within the team. For example, the convention could be to write all Playbooks for Rundeck execution with `hosts: all` and then limit execution via Rundeck Target Nodes.
+
+On the other hand, it might make sense to leave the host specification as `hosts: webservers` if the Playbook should absolutely not be run on any hosts that aren't in the webservers group, just as an extra guardrail. This probably makes more sense if Rundeck and Ansible are using the same inventory source, e.g. Rundeck is using the "Ansible Resource Model Source".
+
+### Nodes in Rundeck:
+
+When using the Ansible Resource Model Source, if you allow Rundeck to Gather Facts, the Nodes in Rundeck will be populated with a useful subset of the Facts which Ansible gathered. The Ansible Inventory Group becomes a Rundeck Tag.
+
+A Rundeck Node filter can be constructed from any of the Facts gathered, e.g.:
+
+```
+
+distribution: OracleLinux distribution_major_version: 7
+
+```

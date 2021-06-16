@@ -95,3 +95,7 @@ A Rundeck Node filter can be constructed from any of the Facts gathered, e.g.:
 distribution: OracleLinux distribution_major_version: 7
 
 ```
+
+### Inventory Sources
+
+The file `rundeck-community-testing/rundeck-inventory.yml` is an example of an inventory source for Rundeck. This file can also be hosted somehere and Rundeck can point to it via the URL inventory resource. In my testing, Rundeck was able to read it from github.

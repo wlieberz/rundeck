@@ -30,4 +30,3 @@
         state: directory
         owner: rundeck
         group: rundeck
-        #mode: 

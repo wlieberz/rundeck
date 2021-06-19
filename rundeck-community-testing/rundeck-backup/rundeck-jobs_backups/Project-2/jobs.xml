@@ -1,0 +1,24 @@
+<joblist>
+  <job>
+    <defaultTab>nodes</defaultTab>
+    <description>Check the disk space on this Rundeck server.</description>
+    <executionEnabled>true</executionEnabled>
+    <id>10a35f67-6e2a-4c2b-a580-91fefffa5e7a</id>
+    <loglevel>INFO</loglevel>
+    <name>Disk Space on Rundeck server Check</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <description>check-space</description>
+        <node-step-plugin type='localexec'>
+          <configuration>
+            <entry key='command' value='/bin/bash -c "df -hT | grep -v tmpfs | grep -v devtmpfs"' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>10a35f67-6e2a-4c2b-a580-91fefffa5e7a</uuid>
+  </job>
+</joblist>

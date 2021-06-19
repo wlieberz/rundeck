@@ -1,0 +1,4 @@
+{ 
+  "rd_url" : "http://rundeck:4440",
+  "bu_base_path" : "./rundeck-jobs_backups"
+}

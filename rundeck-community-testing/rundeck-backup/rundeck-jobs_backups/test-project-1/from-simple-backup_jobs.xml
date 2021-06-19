@@ -1,0 +1,175 @@
+<joblist>
+  <job>
+    <defaultTab>nodes</defaultTab>
+    <description>Job to verify that Ansible Playbook execution from Rundeck is working.</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <successOnEmptyNodeFilter>false</successOnEmptyNodeFilter>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <id>2f4de4fc-c597-42cb-accd-750ef250b18c</id>
+    <loglevel>INFO</loglevel>
+    <name>Ansible Playbook Test Job</name>
+    <nodeFilterEditable>true</nodeFilterEditable>
+    <nodefilters>
+      <filter>.*</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='parallel'>
+      <command>
+        <description>run_test-playbook</description>
+        <node-step-plugin type='com.batix.rundeck.plugins.AnsiblePlaybookWorflowNodeStep'>
+          <configuration>
+            <entry key='ansible-base-dir-path' value='/var/lib/rundeck/git-repos/rundeck-community-testing/ansible' />
+            <entry key='ansible-become' value='false' />
+            <entry key='ansible-playbook' value='test-playbook.yml' />
+            <entry key='ansible-ssh-auth-type' value='privateKey' />
+            <entry key='ansible-ssh-passphrase-option' value='option.password' />
+            <entry key='ansible-ssh-use-agent' value='false' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>2f4de4fc-c597-42cb-accd-750ef250b18c</uuid>
+  </job>
+  <job>
+    <defaultTab>nodes</defaultTab>
+    <description>Test to verify Ansible Playbook which calls one or more Ansible Roles runs.</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <successOnEmptyNodeFilter>false</successOnEmptyNodeFilter>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <id>2a25951f-2a54-4598-a22e-1ff1cee6bc45</id>
+    <loglevel>INFO</loglevel>
+    <name>Ansible Playbook with Role Test</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <nodefilters>
+      <filter>tags: testing_rundeck_servers</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='parallel'>
+      <command>
+        <description>run-playbook</description>
+        <node-step-plugin type='com.batix.rundeck.plugins.AnsiblePlaybookWorflowNodeStep'>
+          <configuration>
+            <entry key='ansible-base-dir-path' value='/var/lib/rundeck/git-repos/rundeck-community-testing/ansible' />
+            <entry key='ansible-become' value='false' />
+            <entry key='ansible-playbook' value='/var/lib/rundeck/git-repos/rundeck-community-testing/ansible/01_install-rundeck-server.yml' />
+            <entry key='ansible-ssh-auth-type' value='privateKey' />
+            <entry key='ansible-ssh-passphrase-option' value='option.password' />
+            <entry key='ansible-ssh-use-agent' value='false' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <uuid>2a25951f-2a54-4598-a22e-1ff1cee6bc45</uuid>
+  </job>
+  <job>
+    <defaultTab>nodes</defaultTab>
+    <description>Gets uptime.</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <successOnEmptyNodeFilter>false</successOnEmptyNodeFilter>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <id>3860c057-b93d-4717-b9af-2f5ff5da2c41</id>
+    <loglevel>INFO</loglevel>
+    <name>Get uptime</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <nodefilters>
+      <filter>rundeck-test-target.*</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='parallel'>
+      <command>
+        <exec>uptime</exec>
+      </command>
+    </sequence>
+    <timeout>8h</timeout>
+    <uuid>3860c057-b93d-4717-b9af-2f5ff5da2c41</uuid>
+  </job>
+  <job>
+    <defaultTab>nodes</defaultTab>
+    <description>Only installs packages that have a security errata. https://access.redhat.com/solutions/10021</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <successOnEmptyNodeFilter>false</successOnEmptyNodeFilter>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <id>75f97e1d-b39a-441d-afbc-58348db68c84</id>
+    <loglevel>INFO</loglevel>
+    <name>Install Security Patches RHEL 5678</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <nodefilters>
+      <filter>rundeck-test-target.*</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='parallel'>
+      <command>
+        <description>yum update-minimal --security</description>
+        <exec>sudo yum update-minimal --security -y</exec>
+      </command>
+    </sequence>
+    <timeout>8h</timeout>
+    <uuid>75f97e1d-b39a-441d-afbc-58348db68c84</uuid>
+  </job>
+  <job>
+    <defaultTab>nodes</defaultTab>
+    <description>Syncs Testing Git repo to Rundeck server.</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <successOnEmptyNodeFilter>false</successOnEmptyNodeFilter>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <id>7506881f-c555-465c-9c69-e0778f6dad3a</id>
+    <loglevel>INFO</loglevel>
+    <name>Sync Testing Repo</name>
+    <nodeFilterEditable>false</nodeFilterEditable>
+    <nodefilters>
+      <filter>rundeck</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <plugins />
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <node-step-plugin type='com.batix.rundeck.plugins.AnsiblePlaybookWorflowNodeStep'>
+          <configuration>
+            <entry key='ansible-base-dir-path' value='/var/lib/rundeck/git-repos/rundeck-community-testing/ansible' />
+            <entry key='ansible-become' value='false' />
+            <entry key='ansible-playbook' value='/var/lib/rundeck/git-repos/rundeck-community-testing/ansible/02_sync-repo-on-rundeck-server.yml' />
+            <entry key='ansible-ssh-auth-type' value='privateKey' />
+            <entry key='ansible-ssh-passphrase-option' value='option.password' />
+            <entry key='ansible-ssh-use-agent' value='false' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+    </sequence>
+    <timeZone>PST</timeZone>
+    <uuid>7506881f-c555-465c-9c69-e0778f6dad3a</uuid>
+  </job>
+</joblist>

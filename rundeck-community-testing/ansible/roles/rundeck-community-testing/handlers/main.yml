@@ -9,3 +9,8 @@
   ansible.builtin.service:
     name: rundeckd
     state: restarted
+
+- name: restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

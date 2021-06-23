@@ -3,6 +3,8 @@
 
 rundeck_java_pkg: "java-11-openjdk.x86_64"
 
+host_firewall_enabled: "True"
+
 rundeck_http_port: 4440
 rundeck_http_port_state: enabled
 

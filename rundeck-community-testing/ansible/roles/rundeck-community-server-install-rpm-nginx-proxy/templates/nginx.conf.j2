@@ -1,0 +1,58 @@
+# FILE MANAGED BY ANSIBLE.
+
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    default_type        application/octet-stream;
+
+  server {
+      listen       80;
+      server_name  {{ ansible_fqdn }} _;
+      return 301 https://$host$request_uri;
+      }
+
+
+  server {
+    listen 443 ssl;
+    server_name {{ ansible_fqdn }} _;
+
+    ssl_certificate "/etc/ssl/private/server.crt";
+    ssl_certificate_key "/etc/ssl/private/server.key";
+
+    ssl_session_cache builtin:1000 shared:SSL:10m;
+    ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+      proxy_set_header    Host '{{ ansible_fqdn }}';
+      proxy_pass_header   X-Real-IP;
+      proxy_pass_header   X-Forwarded-Proto;
+      proxy_pass_header   X-Forwarded-Host;
+      proxy_pass_header   X-Forwarded-Server;
+      proxy_pass_header   X-Forwarded-For;
+
+      proxy_pass          http://localhost:4440;
+    }
+}
+
+}

@@ -1,0 +1,81 @@
+---
+
+- name: Ensure Java runtime installed
+  become: true
+  ansible.builtin.yum:
+    name: "{{ rundeck_java_pkg }}"
+    state: present
+
+- name: Ensure rundeck repo present
+  become: true
+  ansible.builtin.copy:
+    src: rundeck.repo_rpm
+    dest: /etc/yum.repos.d/rundeck.repo
+
+- name: Ensure rundeck installed
+  become: true
+  ansible.builtin.yum:
+    name: rundeck
+    state: present
+
+# Configure Rundeck:
+
+- name: Ensure /etc/rundeck/framework.properties framework.server.url
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/rundeck/framework.properties
+    line: "framework.server.url = https://{{ ansible_fqdn }}"
+    regexp: '^framework.server.url'
+    state: present
+    backrefs: yes
+  notify:
+  - restart rundeck
+
+- name: Ensure rundeck config grails.serverURL
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/rundeck/rundeck-config.properties
+    line: "grails.serverURL=https://{{ ansible_fqdn }}"
+    regexp: '^grails.serverURL'
+    state: present
+  notify:
+  - restart rundeck
+
+- name: Ensure rundeck config server.useForwardHeaders=true
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/rundeck/rundeck-config.properties
+    line: "server.useForwardHeaders=true"
+    insertafter: "grails.serverURL"
+    state: present
+  notify:
+  - restart rundeck
+
+- name: Ensure rundeck service started and enabled
+  become: true
+  ansible.builtin.service:
+    name: rundeckd
+    enabled: yes
+    state: started
+
+# Install & configure nginx reverse proxy:
+- name: Ensure nginx installed
+  become: true
+  ansible.builtin.yum:
+    name: nginx
+    state: present
+
+- name: Ensure nginx config
+  become: true
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify:
+  - restart nginx
+
+- name: Ensure nginx service
+  become: true
+  ansible.builtin.service:
+    name: nginx
+    enabled: yes
+    state: started

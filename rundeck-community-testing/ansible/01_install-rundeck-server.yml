@@ -3,4 +3,5 @@
 - hosts: testing_rundeck_servers
   become: true
   roles:
-    - rundeck-community-testing
+    - self-signed-tls-cert
+    - rundeck-community-server-install-rpm-nginx-proxy

@@ -1,0 +1,6 @@
+---
+
+- name: restart rundeck
+  ansible.builtin.service:
+    name: rundeckd
+    state: restarted

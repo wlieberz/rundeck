@@ -1,0 +1,38 @@
+---
+
+- name: Ensure Java runtime
+  become: true
+  ansible.builtin.yum:
+    name: "{{ rundeck_java_pkg }}"
+    state: present
+
+- name: Ensure rundeck repo
+  become: true
+  ansible.builtin.copy:
+    src: rundeck.repo_rpm
+    dest: /etc/yum.repos.d/rundeck.repo
+
+- name: Ensure rundeck installed
+  become: true
+  ansible.builtin.yum:
+    name: rundeck
+    state: present
+
+# Fix URLs reverting to http://localhost:4440/menu/home after login:
+- name: Ensure /etc/rundeck/rundeck-config.properties grails.serverURL
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/rundeck/rundeck-config.properties
+    line: "grails.serverURL=http://{{ ansible_fqdn }}:4440"
+    regexp: '^grails.serverURL'
+    backrefs: yes
+    state: present
+  notify:
+  - restart rundeck
+
+- name: Ensure rundeck service
+  become: true
+  ansible.builtin.service:
+    name: rundeckd
+    enabled: yes
+    state: started

@@ -1,5 +1,0 @@
----
-
-- name: Configure Oracle Linux 7 systems
-  include: oracle-linux-7-tasks.yml
-  when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "7"

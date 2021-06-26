@@ -1,0 +1,24 @@
+---
+# tasks file for self-signed-tls-cert
+
+- name: Ensure /etc/ssl/private dir exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/ssl/private
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Ensure csr config
+  become: true
+  ansible.builtin.template:
+    src: csr-conf.cnf.j2
+    dest: /etc/ssl/private/csr-conf.cnf
+
+- name: Generate self-signed cert
+  become: true
+  ansible.builtin.script:
+    cmd: generate-self-signed-tls-cert-and-key.sh
+    chdir: /etc/ssl/private
+    creates: /etc/ssl/private/server.crt 
